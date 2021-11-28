@@ -11,7 +11,7 @@ COPY    go.sum ./
 RUN     go mod download
 RUN     go mod verify
 
-COPY    routes/ /app/
+COPY    . ./
 
 # Build
 RUN     go build -o /main
