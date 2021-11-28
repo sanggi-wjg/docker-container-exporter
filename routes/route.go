@@ -13,4 +13,5 @@ func GetMetrics(w http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 	fmt.Println(cli)
+	w.Write([]byte("Hello World"))
 }

@@ -9,7 +9,9 @@ WORKDIR /app
 COPY    go.mod ./
 COPY    go.sum ./
 RUN     go mod download
-COPY    *.go ./
+RUN     go mod verify
+
+COPY    routes/ /app/
 
 # Build
 RUN     go build -o /main
