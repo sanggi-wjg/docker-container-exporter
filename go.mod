@@ -7,5 +7,6 @@ require (
 	github.com/docker/docker v20.10.11+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
+	github.com/prometheus/client_golang v1.7.1
 	google.golang.org/grpc v1.42.0 // indirect
 )

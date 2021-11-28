@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 FROM golang:1.16-alpine
 
+EXPOSE  9091
+
 #########################################################
 RUN     mkdir /app
 WORKDIR /app
@@ -14,8 +16,5 @@ RUN     go mod verify
 COPY    . ./
 
 # Build
-RUN     go build -o /main
-CMD     [ "/main" ]
-
-# Expose ports
-EXPOSE  9091
+RUN     go build -o /docker-container-exporter
+CMD     [ "/docker-container-exporter" ]

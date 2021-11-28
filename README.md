@@ -1,17 +1,18 @@
 ## Start with docker
 ```
 cd /home 
-git clone https://github.com/sanggi-wjg/docker-container-client.git
+git clone https://github.com/sanggi-wjg/docker-container-exporter.git
 
-docker build -t dc-client .
-docker run -d -p 9091:9091 --privileged=true --name dc-client dc-client
+docker build -t dc-exporter .
+docker run -p 9091:9091 --privileged=true --name dc-exporter dc-exporter
+#docker run -d -p 9091:9091 --privileged=true --name dc-exporter dc-exporter
 ```
 
 
 
 ### Go mod
 ```
-go mod init github.com/sanggi-wjg/docker-continer-client        
+go mod init github.com/sanggi-wjg/docker-continer-exporter        
 
 # 추가사항
 go mod vendor

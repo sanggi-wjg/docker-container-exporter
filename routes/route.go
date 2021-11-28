@@ -1,23 +1,27 @@
 package routes
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
 func Ping(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("pong")
 	w.Write([]byte("pong"))
 }
 
-func GetMetrics(w http.ResponseWriter, req *http.Request) {
+func GetContainers(w http.ResponseWriter, req *http.Request) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(cli)
-	fmt.Println("hello worldddd")
-	w.Write([]byte("Hello World"))
+
+	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	for _, container := range containers {
+		fmt.Println(container)
+		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+	}
 }
