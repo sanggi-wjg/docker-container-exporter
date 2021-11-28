@@ -21,7 +21,14 @@ go mod download
 go mod verify
 ```
 
-### Make Dockerfile 
+### Ref
 ```
+# Go Docker client api
+https://pkg.go.dev/github.com/docker/docker/client#section-readme
+
+# Make Dockerfile 
 https://docs.docker.com/language/golang/build-images/
+
+# install go on ubuntu 20.04
+https://www.digitalocean.com/community/tutorials/how-to-install-go-on-ubuntu-20-04
 ```

@@ -7,6 +7,11 @@ import (
 )
 
 func main() {
+	http.HandleFunc("/ping", routes.Ping)
 	http.HandleFunc("/metrics", routes.GetMetrics)
-	http.ListenAndServe(":9091", nil)
+
+	err := http.ListenAndServe(":9091", nil)
+	if err != nil {
+		panic(err)
+	}
 }

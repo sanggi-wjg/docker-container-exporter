@@ -1,0 +1,11 @@
+settings.json
+.idea/.gitignore
+.idea/deployment.xml
+.idea/docker-container-client.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/sshConfigs.xml
+.idea/vcs.xml
+.idea/webServers.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml

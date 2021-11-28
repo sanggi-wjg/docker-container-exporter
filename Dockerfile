@@ -15,8 +15,7 @@ COPY    . ./
 
 # Build
 RUN     go build -o /main
-CMD     [ "/app/main" ]
+CMD     [ "/main" ]
 
 # Expose ports
 EXPOSE  9091
-#########################################################
