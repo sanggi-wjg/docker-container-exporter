@@ -19,7 +19,7 @@ func info() {
 
 func main() {
 	prometheus.Register(version.NewCollector("docker_container_exporter"))
-	prometheus.Register(dc_collector.NewDcCollector())
+	prometheus.Register(dc_collector.NewContainerMetric())
 
 	http.HandleFunc("/ping", routes.Ping)
 	http.HandleFunc("/containers", routes.GetContainers)
