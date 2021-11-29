@@ -6,13 +6,14 @@ git clone https://github.com/sanggi-wjg/docker-container-exporter.git
 docker build -t dc-exporter .
 docker run -p 9091:9091 --privileged=true --name dc-exporter dc-exporter
 #docker run -d -p 9091:9091 --privileged=true --name dc-exporter dc-exporter
+# --detach --restart always --volume "/var/run/docker.sock":"/var/run/docker.sock"
 ```
 
 
 
 ### Go mod
 ```
-go mod init github.com/sanggi-wjg/docker-continer-exporter        
+go mod init github.com/sanggi-wjg/docker-continer-exporter
 
 # 추가사항
 go mod vendor

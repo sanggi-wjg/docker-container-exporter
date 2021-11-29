@@ -3,17 +3,31 @@ package main
 import (
 	"net/http"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/sanggi-wjg/docker-continer-client/routes"
+	"github.com/prometheus/common/version"
+	"github.com/sanggi-wjg/docker-continer-exporter/routes"
+	"github.com/sanggi-wjg/docker-continer-exporter/routes/dc_collector"
+
+	log "github.com/sirupsen/logrus"
 )
 
+func info() {
+	log.Info("Starting http server with port:9091")
+	log.Info("route to /ping /containers /metrics")
+}
+
 func main() {
+	prometheus.Register(version.NewCollector("docker_container_exporter"))
+	prometheus.Register(dc_collector.NewDcCollector())
+
 	http.HandleFunc("/ping", routes.Ping)
-	http.HandleFunc("/cs", routes.GetContainers)
+	http.HandleFunc("/containers", routes.GetContainers)
 	http.Handle("/metrics", promhttp.Handler())
+	info()
 
 	err := http.ListenAndServe(":9091", nil)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
