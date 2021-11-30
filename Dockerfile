@@ -7,13 +7,10 @@ EXPOSE  9091
 RUN     mkdir /app
 WORKDIR /app
 
-# Download Go modules
-COPY    go.mod ./
-COPY    go.sum ./
+# Copy project file and Go modules
+COPY    . ./
 RUN     go mod download
 RUN     go mod verify
-
-COPY    . ./
 
 # Build
 RUN     go build -o /docker_container_exporter

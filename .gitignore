@@ -995,3 +995,4 @@ vendor/google.golang.org/protobuf/types/descriptorpb/descriptor.pb.go
 vendor/google.golang.org/protobuf/types/known/anypb/any.pb.go
 vendor/google.golang.org/protobuf/types/known/durationpb/duration.pb.go
 vendor/google.golang.org/protobuf/types/known/timestamppb/timestamp.pb.go
+vendor/github.com/prometheus/common/version/info.go
