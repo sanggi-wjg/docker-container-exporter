@@ -16,5 +16,5 @@ RUN     go mod verify
 COPY    . ./
 
 # Build
-RUN     go build -o /docker-container-exporter
-CMD     [ "/docker-container-exporter" ]
+RUN     go build -o /docker_container_exporter
+CMD     [ "/docker_container_exporter" ]
