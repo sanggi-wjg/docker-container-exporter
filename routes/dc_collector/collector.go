@@ -1,6 +1,7 @@
 package dc_collector
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/docker/docker/api/types"
@@ -46,21 +47,20 @@ func (collector *containerMetric) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (collector *containerMetric) Collect(ch chan<- prometheus.Metric) {
-	var metricValue float64
-
 	containers := docker.GetDockerContainers()
 	for _, container := range containers {
 		containerInfo := newContainerInfo(container)
 		// fmt.Println(containerInfo, container.State, container.Status)
 
 		ch <- prometheus.MustNewConstMetric(collector.containerUp, prometheus.CounterValue, float64(containerInfo.IsUp), containerInfo.Name)
-		ch <- prometheus.MustNewConstMetric(collector.containerUpTime, prometheus.CounterValue, metricValue, containerInfo.Name)
+		ch <- prometheus.MustNewConstMetric(collector.containerUpTime, prometheus.CounterValue, float64(containerInfo.UpTime), containerInfo.Name)
 		ch <- prometheus.MustNewConstMetric(collector.containerCreateTime, prometheus.CounterValue, containerInfo.CreatedTime, containerInfo.Name)
 	}
 }
 
 type containerInfo struct {
 	IsUp        int
+	UpTime      int
 	Name        string
 	CreatedTime float64
 }
@@ -68,11 +68,31 @@ type containerInfo struct {
 func newContainerInfo(container types.Container) *containerInfo {
 	// fmt.Println(container.Status)
 	isUp := parseStateToInt(container.State)
+	upTime := parseStatusToInt(container.Status)
 	name := strings.Replace(container.Names[0], "/", "", -1)
 	createdTime := float64(container.Created)
 
-	ci := containerInfo{IsUp: isUp, Name: name, CreatedTime: createdTime}
+	ci := containerInfo{IsUp: isUp, UpTime: upTime, Name: name, CreatedTime: createdTime}
 	return &ci
+}
+
+func parseStatusToInt(status string) int {
+	if strings.Contains(status, "Up") {
+		st := strings.ReplaceAll(status, "Up", "")
+		st = strings.ReplaceAll(st, " ", "")
+
+		if strings.Contains(status, "hours") {
+			st = strings.ReplaceAll(st, "hours", "")
+			hour, _ := strconv.Atoi(st)
+			return hour
+		} else if strings.Contains(st, "days") {
+			st = strings.ReplaceAll(st, "days", "")
+			day, _ := strconv.Atoi(st)
+			return day * 24
+		}
+	}
+
+	return 0
 }
 
 func parseStateToInt(state string) int {
