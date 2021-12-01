@@ -80,8 +80,15 @@ func parseStatusToInt(status string) int {
 	if strings.Contains(status, "Up") {
 		st := strings.ReplaceAll(status, "Up", "")
 		st = strings.ReplaceAll(st, " ", "")
-
-		if strings.Contains(status, "hours") {
+		if strings.Contains(st, "minutes") {
+			st = strings.ReplaceAll(st, "hours", "")
+			var min int
+			var err error
+			if min, err = strconv.Atoi(st); err != nil {
+				return 1
+			}
+			return min
+		} else if strings.Contains(st, "hours") {
 			st = strings.ReplaceAll(st, "hours", "")
 			hour, _ := strconv.Atoi(st)
 			return hour
