@@ -69,7 +69,7 @@ fef9fe8ec397   dc-exporter            "/docker_container_e…"   5 seconds ago  
 ## Metrics
 * app_docker_container_create_time{name="container image name"}
 * app_docker_container_up{name="container image name"}
-* app_docker_container_up_time{name="container image name"}
+* app_docker_container_up_time{name="container image name"} (not completed)
 
 ```
 root@ubuntu20:/home/docker-container-exporter# curl localhost:9091/metrics

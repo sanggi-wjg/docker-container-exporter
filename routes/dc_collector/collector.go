@@ -22,19 +22,19 @@ func NewContainerMetric() *containerMetric {
 		containerUp: prometheus.NewDesc(
 			"app_docker_container_up",
 			"docker container up",
-			[]string{"names"},
+			[]string{"container_name"},
 			nil,
 		),
 		containerUpTime: prometheus.NewDesc(
 			"app_docker_container_up_time",
 			"docker container uptime",
-			[]string{"names"},
+			[]string{"container_name"},
 			nil,
 		),
 		containerCreateTime: prometheus.NewDesc(
 			"app_docker_container_create_time",
 			"docker container create time",
-			[]string{"names"},
+			[]string{"container_name"},
 			nil,
 		),
 	}
@@ -53,58 +53,64 @@ func (collector *containerMetric) Collect(ch chan<- prometheus.Metric) {
 		// fmt.Println(containerInfo, container.State, container.Status)
 
 		ch <- prometheus.MustNewConstMetric(collector.containerUp, prometheus.CounterValue, float64(containerInfo.IsUp), containerInfo.Name)
-		ch <- prometheus.MustNewConstMetric(collector.containerUpTime, prometheus.CounterValue, float64(containerInfo.UpTime), containerInfo.Name)
+		ch <- prometheus.MustNewConstMetric(collector.containerUpTime, prometheus.CounterValue, float64(containerInfo.Uptime), containerInfo.Name)
 		ch <- prometheus.MustNewConstMetric(collector.containerCreateTime, prometheus.CounterValue, containerInfo.CreatedTime, containerInfo.Name)
 	}
 }
 
 type containerInfo struct {
 	IsUp        int
-	UpTime      int
+	Uptime      int
 	Name        string
 	CreatedTime float64
 }
 
 func newContainerInfo(container types.Container) *containerInfo {
-	// fmt.Println(container.Status)
-	isUp := parseStateToInt(container.State)
-	upTime := parseStatusToInt(container.Status)
+	isUp := parseToIsUp(container.State)
+	uptime := parseToUptime(container.Status)
 	name := strings.Replace(container.Names[0], "/", "", -1)
 	createdTime := float64(container.Created)
 
-	ci := containerInfo{IsUp: isUp, UpTime: upTime, Name: name, CreatedTime: createdTime}
+	ci := containerInfo{
+		IsUp:        isUp,
+		Uptime:      uptime,
+		Name:        name,
+		CreatedTime: createdTime,
+	}
 	return &ci
 }
 
-func parseStatusToInt(status string) int {
+func parseToUptime(status string) int {
 	if strings.Contains(status, "Up") {
 		st := strings.ReplaceAll(status, "Up", "")
 		st = strings.ReplaceAll(st, " ", "")
+
 		if strings.Contains(st, "minutes") {
-			st = strings.ReplaceAll(st, "hours", "")
-			var min int
-			var err error
-			if min, err = strconv.Atoi(st); err != nil {
-				return 1
+			st = strings.ReplaceAll(st, "minutes", "")
+			min, err := strconv.Atoi(st)
+			if err != nil {
+				return 1 * 60
 			}
-			return min
+			return min * 60
+
 		} else if strings.Contains(st, "hours") {
 			st = strings.ReplaceAll(st, "hours", "")
 			hour, _ := strconv.Atoi(st)
-			return hour
+			return hour * 60 * 60
+
 		} else if strings.Contains(st, "days") {
 			st = strings.ReplaceAll(st, "days", "")
 			day, _ := strconv.Atoi(st)
-			return day * 24
+			return day * 60 * 60 * 24
 		}
 	}
 
 	return 0
 }
 
-func parseStateToInt(state string) int {
+func parseToIsUp(state string) int {
 	// "paused", "restarting", "running", "removing", "dead", "created", "exited"
-	for _, s := range []string{"running", "restarting", "removing"} {
+	for _, s := range []string{"running", "restarting"} {
 		if state == s {
 			return 1
 		}
