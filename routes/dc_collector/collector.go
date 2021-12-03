@@ -85,7 +85,15 @@ func parseToUptime(status string) int {
 		st := strings.ReplaceAll(status, "Up", "")
 		st = strings.ReplaceAll(st, " ", "")
 
-		if strings.Contains(st, "minutes") {
+		if strings.Contains(st, "seconds") {
+			st = strings.ReplaceAll(st, "seconds", "")
+			sec, err := strconv.Atoi(st)
+			if err != nil {
+				return 1
+			}
+			return sec
+
+		} else if strings.Contains(st, "minutes") {
 			st = strings.ReplaceAll(st, "minutes", "")
 			min, err := strconv.Atoi(st)
 			if err != nil {
